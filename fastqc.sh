@@ -1,16 +1,23 @@
 #!/bin/bash
+#SBATCH --job-name=quality_check
+#SBATCH --ntasks=16
+#SBATCH --mem=80G
+#SBATCH --partition=hugemem-avx2
+#SBATCH --mail-user=amulya.baral@nmbu.no
+#SBATCH --mail-type=ALL
 
-# Define input and output directories
+
+# input and output directories
 input_dir="/mnt/project/AntibiotiKU/hunt_rawfiles/"
 output_dir="/mnt/project/AntibiotiKU/fastqc_output/"
 
-# Number of threads to use
-threads=10
+# number of threads to use
+threads=32
 
-# Create the output directory if it doesn't exist
+# creating the output directory if it doesn't exist
 mkdir -p "$output_dir"
 
-# Find and process each .fq.gz file
+
 find "$input_dir" -type f -name "*.fq.gz" | while read -r file; do
     echo "Processing $file with FastQC..."
     fastqc --noextract -t "$threads" -o "$output_dir" "$file"
