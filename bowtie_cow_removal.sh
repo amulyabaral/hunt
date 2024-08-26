@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --ntasks=64                                 # Number of cores (CPU)
 #SBATCH --nodes=1                                   # Number of nodes to use
-#SBATCH --job-name=plastpath_host                  # Job name 
+#SBATCH --job-name=hunt_host                  # Job name 
 #SBATCH --mem=300G                                  # Required RAM - Default memory per CPU is 3GB.
-#SBATCH --partition=hugemem                         # Use smallmem for jobs < 10 GB RAM|Options: hugemen, smallmem, gpu
+#SBATCH --partition=hugemem-avx2                         # Use smallmem for jobs < 10 GB RAM|Options: hugemen, smallmem, gpu
 #SBATCH --mail-user=amulya.baral@nmbu.no            # Email when job is done.
 #SBATCH --mail-type=ALL
 
