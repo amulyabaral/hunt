@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /mnt/project/AntibiotiKU/hunt_host_removed
+
 # Create new csv file and write the headers
 echo "sample,cow,pig,dog" > alignment_rates.csv
 
