@@ -19,7 +19,7 @@ nextflow run nf-core/mag \
         --refine_bins_dastool \
         --kraken2_db /mnt/project/AntibiotiKU/databases/k2_standard_20231009 \
         --run_virus_identification \
-        --min_contig_size 1000 \
+        --min_contig_size 1000
 
 
 echo "pipeline complete! yay!"
