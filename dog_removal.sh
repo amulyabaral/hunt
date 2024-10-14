@@ -18,3 +18,4 @@ find /mnt/project/AntibiotiKU/hunt_rawfiles/ -type f -name "*_1.fq.gz" | xargs -
     bowtie2 -x /mnt/project/AntibiotiKU/bowtie_indexes/canfam4/canfam4 -p 1 -1 $forward_read -2 $reverse_read \
     --no-unal --no-head > /dev/null 2> /mnt/project/AntibiotiKU/hunt_host_removed/$sample_name.dog.bowtie2.log
 '
+
