@@ -19,5 +19,6 @@ nextflow run nf-core/mag \
  --run_virus_identification \
  --min_contig_size 1000 \
  --gtdb_db "/mnt/project/AntibiotiKU/gtdb_db/gtdbtk_r220_data.tar.gz" \
+ -resume
 
 echo "pipeline complete! yay!"
