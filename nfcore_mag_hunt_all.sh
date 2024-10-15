@@ -18,6 +18,6 @@ nextflow run nf-core/mag \
  --kraken2_db /mnt/project/AntibiotiKU/databases/k2_standard_20231009 \
  --run_virus_identification \
  --min_contig_size 1000 \
- --gtdb_db https://data.gtdb.ecogenomic.org/releases/release220/220.0/auxillary_files/gtdbtk_package/full_package/gtdbtk_r220_data.tar.gz
- 
+ --gtdb_db /mnt/project/AntibiotiKU/gtdb_db/gtdbtk_r220_data.tar.gz
+
 echo "pipeline complete! yay!"
