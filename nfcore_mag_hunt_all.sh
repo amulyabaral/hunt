@@ -17,8 +17,8 @@ nextflow run nf-core/mag \
  --refine_bins_dastool \
  --kraken2_db "/mnt/project/AntibiotiKU/databases/k2_standard_20240904.tar.gz" \
  --run_virus_identification \
- --min_contig_size 1000 \
- --gtdb_db "/mnt/project/AntibiotiKU/gtdb_db/release220" \
+ --min_contig_size 1500 \
+ --skip_gtdbtk \
  -resume
 
 echo "pipeline complete! yay!"
