@@ -18,7 +18,7 @@ nextflow run nf-core/mag \
  --kraken2_db "/mnt/project/AntibiotiKU/databases/k2_standard_20240904.tar.gz" \
  --run_virus_identification \
  --min_contig_size 1000 \
- --gtdb_db "/mnt/project/AntibiotiKU/gtdb_db/gtdbtk_r220_data.tar.gz" \
+ --gtdb_db "/mnt/project/AntibiotiKU/gtdb_db/release220" \
  -resume
 
 echo "pipeline complete! yay!"
