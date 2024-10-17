@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --ntasks=64
+#SBATCH --ntasks=28
 #SBATCH --job-name=norair_spades
 #SBATCH --mem=120G                                 # Required RAM - Default memory per CPU is 3GB.
 #SBATCH --partition=hugemem-avx2                         # Use smallmem for jobs < 10 GB RAM|Options: hugemen, smallmem, gpu
@@ -25,10 +25,10 @@ for forward_read in "$INPUT_DIR"/*_1.fq.gz; do
     mkdir -p "$regular_sample_output" "$plasmid_sample_output"
 
     # Perform regular assembly
-    spades.py -1 "$forward_read" -2 "$reverse_read" -o "$regular_sample_output" -t 64
+    spades.py -1 "$forward_read" -2 "$reverse_read" -o "$regular_sample_output" -t 28
 
     # Perform plasmid assembly
-    spades.py -1 "$forward_read" -2 "$reverse_read" -o "$plasmid_sample_output" --plasmid -t 64
+    spades.py -1 "$forward_read" -2 "$reverse_read" -o "$plasmid_sample_output" --plasmid -t 28
 
     echo "Completed processing sample: $sample_name"
     echo "Regular assembly output: $regular_sample_output"
