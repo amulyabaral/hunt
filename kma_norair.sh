@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --ntasks=64
 #SBATCH --job-name=kma_norair
-#SBATCH --mem=300G
+#SBATCH --mem=160G
 #SBATCH --partition=hugemem-avx2
 #SBATCH --mail-user=amulya.baral@nmbu.no
 #SBATCH --mail-type=ALL
