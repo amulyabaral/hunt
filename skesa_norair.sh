@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --ntasks=64
-#SBATCH --job-name=norair_blast
+#SBATCH --job-name=norair_skesa
 #SBATCH --mem=300G                                 # Required RAM - Default memory per CPU is 3GB.
 #SBATCH --partition=hugemem-avx2                         # Use smallmem for jobs < 10 GB RAM|Options: hugemen, smallmem, gpu
 #SBATCH --mail-user=amulya.baral@nmbu.no            # Email when job is done.
@@ -15,8 +15,8 @@ for forward_read in $(cat forward_reads_norair.txt); do
     echo -e "Now processing \n Forward read: $forward_read \n Reverse read: $reverse_read \nSample name: $sample_name"
     
     skesa --reads $forward_read,$reverse_read \
-        -- cores 64 \
-        --memory 280 \
+        --cores 64 \
+        --memory 290 \
         > /mnt/project/Food_Safety_VET/norair_output/skesa_output/$sample_name.skesa.fa
 
 done
