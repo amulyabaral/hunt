@@ -23,7 +23,7 @@ for forward_read in "$INPUT_DIR"/*_1.fq.gz; do
     mkdir -p "$regular_sample_output"
 
     # Perform regular assembly
-    spades.py -1 "$forward_read" -2 "$reverse_read" -o "$regular_sample_output" -t 28 --trusted-contigs /mnt/project/Food_Safety_VET/norair_output/GCF_002073255.2/GCF_002073255.2_ASM207325v2_genomic.fna/
+    spades.py -1 "$forward_read" -2 "$reverse_read" -o "$regular_sample_output" -t 28 --trusted-contigs /mnt/project/Food_Safety_VET/norair_output/reference_pasteurella/GCF_002073255.2_ASM207325v2_genomic.fasta/
 
     echo "Completed processing sample: $sample_name"
     echo "Regular assembly output: $regular_sample_output"
