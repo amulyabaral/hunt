@@ -1,9 +1,8 @@
 #!/bin/bash
 #SBATCH --ntasks=64
 #SBATCH --job-name=nfcore_mag_hunt
-#SBATCH --mem=198G
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:1             # Reserve one GPU
+#SBATCH --mem=300G
+#SBATCH --partition=hugemem-avx2
 #SBATCH --mail-user=amulya.baral@nmbu.no
 #SBATCH --mail-type=ALL
 
