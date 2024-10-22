@@ -10,7 +10,7 @@
 # Base directories
 INPUT_DIR="/mnt/SCRATCH/veom/norwair/all_files/fastp_output"
 OUTPUT_BASE="/mnt/project/Food_Safety_VET/norair_output"
-REGULAR_OUTPUT="${OUTPUT_BASE}/spades_assembly_reference_output"
+REGULAR_OUTPUT="${OUTPUT_BASE}/spades_assembly_isolate_output"
 
 # Process each sample
 for forward_read in "$INPUT_DIR"/*_1.fq.gz; do
@@ -23,7 +23,7 @@ for forward_read in "$INPUT_DIR"/*_1.fq.gz; do
     mkdir -p "$regular_sample_output"
 
     # Perform regular assembly
-    spades.py -1 "$forward_read" -2 "$reverse_read" -o "$regular_sample_output" -t 28 --trusted-contigs /mnt/project/Food_Safety_VET/norair_output/reference_pasteurella/GCF_002073255.2_ASM207325v2_genomic.fasta
+    spades.py -1 "$forward_read" -2 "$reverse_read" -o "$regular_sample_output" -t 28 --isolate
 
     echo "Completed processing sample: $sample_name"
     echo "Regular assembly output: $regular_sample_output"
