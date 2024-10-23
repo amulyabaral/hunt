@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=blast_vfdb
+#SBATCH --job-name=blast_megares
 #SBATCH --ntasks=32
 #SBATCH --mem=300G
 #SBATCH --partition=hugemem-avx2
@@ -10,7 +10,7 @@ module load blast
 module load parallel
 
 BASE_DIR="/mnt/project/Food_Safety_VET/norair_output"
-OUTPUT_DIR="${BASE_DIR}/all_blast_output_vfdb"
+OUTPUT_DIR="${BASE_DIR}/all_blast_output_megares"
 mkdir -p "$OUTPUT_DIR"
 
 run_blast() {
@@ -22,7 +22,7 @@ run_blast() {
     output_file="${OUTPUT_DIR}/${grandparent}_${parent}_${base_name}_blast_output.tsv"
     
     blastn -query "$input_file" \
-           -db /mnt/project/AntibiotiKU/databases/vfdb/vfdb_blast \
+           -db /mnt/project/AntibiotiKU/databases/megares_v3.00/megares_blast \
            -outfmt '6 qseqid sseqid salltitles length pident evalue qlen slen qstart qend sstart send' \
            > "$output_file"
 }
