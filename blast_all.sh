@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=quality_check
-#SBATCH --ntasks=64
+#SBATCH --ntasks=32
 #SBATCH --mem=300G
 #SBATCH --partition=hugemem-avx2
 #SBATCH --mail-user=amulya.baral@nmbu.no
