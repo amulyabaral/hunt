@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amulya Baral</title>
+    <style>
+        @font-face {
+            font-family: 'Helvetica Neue';
+            src: url('HelveticaNeue.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: justify;
+            position: relative;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 1.25rem;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+        
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+
+        a:hover {
+            color: coral;
+        }
+
+        .tool-card {
+            position: relative;
+            padding: 0.5rem;
+        }
+
+        .tool-card p {
+            color: #666666;
+            margin: -1rem 0rem;
+        }
+
+        .theme-toggle-button {
+            position: relative;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            padding: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .theme-toggle-button:hover {
+            background-color: coral;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode a {
+            color: #bb86fc;
+        }
+
+        .dark-mode a:hover {
+            color: coral;
+        }
+
+        .dark-mode .tool-card p {
+            color: #bbbbbb;
+        }
+
+        .circular-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 10%;
+            object-fit: cover;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="theme-toggle-button" onclick="toggleTheme()">dark/light mode</button>
+        <script>
+            function toggleTheme() {
+                document.body.classList.toggle('dark-mode');
+            }
+        </script>
+        <h1>Hello, I'm Amulya Baral.</h1>
+        <div class="intro">
+            <p>I'm doing a PhD in bioinformatics and epidemiology. My research focuses on <a href="https://app.cristin.no/persons/show.jsf?id=1629327" target="_blank">using metagenomics to understand antimicrobial resistance</a>,
+                 which I find absolutely fascinating. Outside of research, 
+                 I enjoy <a href="https://photo.onreg.com/api/view.php?eventid=6200&entryid=42801&photo=6200_0_0da3c4634fd9463b6b716dacb0ae4681.jpg&overlay=2024/oslomaraton/overlay1980x1485.png&theme=306" target="_blank"> running </a> 
+                 and hiking trails. I've stepped away from social media, but you can reach me at <a href="mailto:amulyabaral2@gmail.com">amulyabaral2@gmail.com</a>.</p>
+        </div>
+        <div>
+            <p>I also like making apps and tools to solve minor everyday problems. Maybe they might be helpful for you too?</p>
+            <ul>
+                <li>
+                    <a class="tool-card" href="purchase" target="_blank">
+                        <h2>Purchase 💰</h2>
+                        <p>a guide/set of questions to answer before you buy something new. i built it to help with less spending.</p>
+                    </a>
+                </li>
+                <li>
+                    <a class="tool-card" href="https://chromewebstore.google.com/detail/bloom-wellness-reminder/bgfpjncdppbnhmckemjoekchkcgknioe" target="_blank">
+                        <h2>Bloom 🌸</h2>
+                        <p>a chrome extension to remind you to fix your posture, look far out and drink water (it has a default timer, but you can also add your own).</p>
+                    </a>
+                </li>
+                <li>
+                    <a class="tool-card" href="myelin" target="_blank">
+                        <h2>Myelin 🦠</h2>
+                        <p>if you have sequenced your gut microbiota, you can upload the taxa counts and Myelin will give you insights + food recommendations to build/maintain a healthy gut microbiome (work in progress).</p>
+                    </a>
+                </li>
+                <!-- more pages as needed -->
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+
+    
+
+    

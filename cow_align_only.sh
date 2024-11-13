@@ -14,8 +14,6 @@ find /mnt/project/AntibiotiKU/hunt_rawfiles/ -type f -name "*_1.fq.gz" | xargs -
     forward_read="{}"
     reverse_read="$(echo "$forward_read" | sed "s/_1\.fq\.gz$/_2.fq.gz/")"
     sample_name="$(basename "$forward_read" _1.fq.gz)"
-    # Run Bowtie2 and only output the summary
-    bowtie2 -x /mnt/project/AntibiotiKU/bowtie_indexes/ARS-UCD1.2/ARS-UCD1.2 -p 1 -1 $forward_read -2 $reverse_read \
-    --no-unal --no-head > /dev/null 2> /mnt/project/AntibiotiKU/hunt_host_removed/$sample_name.cow.bowtie2.log
+    bowtie2 -x /mnt/project/AntibiotiKU/bowtie_indexes/ARS-UCD1.2/ARS-UCD1.2 -p 1 -1 $forward_read -2 $reverse_read --un-conc-gz /mnt/project/AntibiotiKU/hunt_host_removed/$sample_name.host_removed.fq.gz > /mnt/project/AntibiotiKU/hunt_host_removed/$sample_name.mapped_unmapped.sam
 '
 

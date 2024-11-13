@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do You Really Need It?</title>
+    <style>
+        @font-face {
+            font-family: 'Helvetica Neue';
+            src: url('HelveticaNeue.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .intro {
+            text-align: center;
+            margin: 1rem;
+        }
+
+        .question {
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 1rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .question-text {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .example {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        button {
+            padding: 0.5rem 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button.selected {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        button:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        #calculate {
+            display: block;
+            margin: 2rem auto;
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+        }
+
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        #save-pdf {
+            display: block;
+            margin: 1rem auto;
+            padding: 0.75rem 1.5rem;
+            background: #10b981;
+            color: white;
+            border: none;
+        }
+
+        .item-info {
+            margin-bottom: 1rem;
+        }
+
+        .item-info input {
+            width: calc(100% - 2rem);
+            padding: 0.5rem;
+            margin: 0.5rem 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Do you really need it?</h1>
+        <div class="item-info">
+            <input type="text" id="item-name" placeholder="What do you want to buy?">
+            <input type="url" id="item-url" placeholder="link/URL to the thing">
+        </div>
+        <p class="intro">
+            If you have to ask that question, you probably don't. Remember that you can put that money into an index fund and it'll grow 10% yoy. Even 1000kr compounds (1k monthly saved becomes 500k in 20 years). House, kids' future, a nice car when you're older, etc. If you're not convinced yet, and if you REALLY want it..
+        </p>
+        <div id="questions"></div>
+        <button id="calculate">Calculate Result</button>
+        <div id="result"></div>
+        <button id="save-pdf">Save as PDF</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        const questions = [
+            {
+                text: "Does it solve a specific problem in your life?",
+                example: "Example: \"A noise-canceling headset will help me focus during work\" vs. \"These shoes look cool\"",
+                needsComment: true
+            },
+            {
+                text: "Will your daily life improve significantly with this item?",
+                example: "Example: \"A better desk chair will reduce my back pain\" vs. \"This new mug will make coffee taste the same\"",
+                needsComment: true
+            },
+            {
+                text: "Will the benefits outweigh the maintenance costs?",
+                example: "Consider: Storage needs, cleaning, repairs, subscriptions"
+            },
+            {
+                text: "Will you realistically use this item often?",
+                example: "Be specific: \"3 times per week for meal prep\" vs. \"Whenever I feel like it\"",
+                needsComment: true
+            },
+            {
+                text: "Would not having this for 3 months mess up your life?",
+                example: "Consider: Is it a need or a want?"
+            },
+            {
+                text: "Do you have dedicated time to use this item?",
+                example: "Example: \"I have 2 hours every Saturday morning\" vs. \"I'll use it when I have time\"",
+                needsComment: true
+            },
+            {
+                text: "Do you have a specific storage space for this item?",
+                example: "Example: \"In the hall closet's top shelf\" vs. \"I'll find space somewhere\"",
+                needsComment: true
+            },
+            {
+                text: "Will this item replace existing items?",
+                example: "Consider: Will you be able to remove other items to make space?"
+            },
+            {
+                text: "Have you researched how to properly dispose of it eventually?",
+                example: "Consider: Recyclability, donation options, landfill impact"
+            },
+            {
+                text: "Is a used or refurbished version available?",
+                example: "Check: Local marketplaces, refurbished options, buy-nothing groups"
+            },
+            {
+                text: "Will you be able to maintain this item?",
+                example: "Consider: Cleaning, regular maintenance, can you repair it yourself?",
+                needsComment: true
+            },
+            {
+                text: "Are you prepared for ongoing costs?",
+                example: "Consider: Subscriptions, supplies"
+            },
+            {
+                text: "Would you suffer if you had to rent this instead of owning it?",
+                example: "Example: Tools from a library, seasonal items"
+            },
+            {
+                text: "Do you really need this exact thing?",
+                example: "List at least 3 alternatives considered",
+                needsComment: true
+            },
+            {
+                text: "Can you buy this without touching savings/debt?",
+                example: "Consider your current budget and financial goals"
+            },
+            {
+                text: "Will this purchase impact other financial goals?",
+                example: "Consider: Savings, planned purchases, emergency fund"
+            },
+            {
+                text: "You sure there's no ethical concerns with this product at all?",
+                example: "Consider: Manufacturing conditions, company practices, environmental impact"
+            },
+            {
+                text: "Does this align with your personal values?",
+                example: "Consider: Minimalism, sustainability, supporting local business"
+            },
+            {
+                text: "Will this item still be valuable to you in a year?",
+                example: "Consider: Trends, changing needs, technology updates"
+            },
+            {
+                text: "Does this purchase support your long-term goals?",
+                example: "Consider: Career, health, personal development"
+            }
+        ];
+
+        const answers = {};
+        const comments = {};
+
+        function createQuestion(q, index) {
+            const div = document.createElement('div');
+            div.className = 'question';
+            div.innerHTML = `
+                <div class="question-text">${q.text}</div>
+                <div class="example">${q.example}</div>
+                <div class="options">
+                    <button onclick="handleAnswer(${index}, 2)">Yes</button>
+                    <button onclick="handleAnswer(${index}, 1)">Somewhat</button>
+                    <button onclick="handleAnswer(${index}, 0)">No</button>
+                </div>
+                ${q.needsComment ? `<textarea onchange="handleComment(${index}, this.value)" placeholder="How?"></textarea>` : ''}
+            `;
+            return div;
+        }
+
+        function handleAnswer(index, value) {
+            answers[index] = value;
+            const buttons = document.querySelectorAll(`.question:nth-child(${index + 1}) button`);
+            buttons.forEach((btn, i) => {
+                btn.classList.toggle('selected', i === (2 - value));
+            });
+
+            const textarea = document.querySelector(`.question:nth-child(${index + 1}) textarea`);
+            if (textarea) {
+                textarea.style.display = value === 2 ? 'block' : 'none';
+            }
+        }
+
+        function handleComment(index, value) {
+            comments[index] = value;
+        }
+
+        function calculateResult() {
+            if (Object.keys(answers).length < questions.length) {
+                alert('Please answer all questions before calculating the result.');
+                return;
+            }
+
+            const total = Object.values(answers).reduce((sum, val) => sum + val, 0);
+            let message = `Score: ${total}/40 - `;
+            
+            if (total >= 32) {
+                message += "This purchase is well-thought-out and justified. If it fits your budget, proceed with confidence.";
+            } else if (total >= 24) {
+                message += "This purchase needs more consideration. Consider waiting and reassessing in a week.";
+            } else {
+                message += "This purchase may not be necessary. Consider saving the money or finding alternatives.";
+            }
+            
+            const result = document.getElementById('result');
+            result.textContent = message;
+            result.style.display = 'block';
+        }
+        function saveAsPDF() {
+            window.print();
+        }
+
+        // Initialize questions
+        const questionsContainer = document.getElementById('questions');
+        questions.forEach((q, i) => {
+            questionsContainer.appendChild(createQuestion(q, i));
+        });
+
+        // Add calculate event listener
+        document.getElementById('calculate').addEventListener('click', calculateResult);
+
+        // Add save PDF event listener
+        document.getElementById('save-pdf').addEventListener('click', saveAsPDF);
+        </script>
+        </body>
+    </html>
