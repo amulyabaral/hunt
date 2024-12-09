@@ -14,7 +14,7 @@ mkdir -p /mnt/project/Food_Safety_VET/norair_output/quast_output
 mkdir -p /mnt/project/Food_Safety_VET/norair_output/busco_output
 
 # Loop through all spades_ directories
-for spades_dir in /mnt/project/Food_Safety_VET/norair_output/spades_*; do
+for spades_dir in /mnt/project/Food_Safety_VET/norair_output/spades_assembly_reference_*; do
     if [ -d "$spades_dir" ]; then
         # Get the base folder name
         base_name=$(basename "$spades_dir")
