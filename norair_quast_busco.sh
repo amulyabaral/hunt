@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --ntasks=64
+#SBATCH --ntasks=32
 #SBATCH --job-name=norair_quast_busco
-#SBATCH --mem=300G
+#SBATCH --mem=200G
 #SBATCH --partition=hugemem-avx2
 #SBATCH --mail-user=amulya.baral@nmbu.no
 #SBATCH --mail-type=ALL
@@ -27,15 +27,15 @@ for spades_dir in /mnt/project/Food_Safety_VET/norair_output/spades_*; do
                     quast.py "$contig_file" \
                         -r "$REF_GENOME" \
                         -o "/mnt/project/Food_Safety_VET/norair_output/quast_output/${sample_name}" \
-                        --threads 64
+                        --threads 32
                     
                     # Run BUSCO
                     busco -i "$contig_file" \
                         -o "${sample_name}" \
                         -m genome \
                         --out_path "/mnt/project/Food_Safety_VET/norair_output/busco_output" \
-                        -l bacteria_odb10 \
-                        -c 64
+                        -l pasteurellales_odb12 \
+                        -c 32
                 fi
             fi
         done
