@@ -16,6 +16,9 @@ mkdir -p /mnt/project/Food_Safety_VET/norair_output/busco_output
 # Loop through all spades_ directories
 for spades_dir in /mnt/project/Food_Safety_VET/norair_output/spades_*; do
     if [ -d "$spades_dir" ]; then
+        # Get the base folder name
+        base_name=$(basename "$spades_dir")
+        
         # Loop through each assembly folder
         for assembly_dir in "$spades_dir"/*; do
             if [ -d "$assembly_dir" ]; then
@@ -26,12 +29,12 @@ for spades_dir in /mnt/project/Food_Safety_VET/norair_output/spades_*; do
                     # Run QUAST
                     quast.py "$contig_file" \
                         -r "$REF_GENOME" \
-                        -o "/mnt/project/Food_Safety_VET/norair_output/quast_output/${sample_name}" \
+                        -o "/mnt/project/Food_Safety_VET/norair_output/quast_output/${base_name}_${sample_name}" \
                         --threads 32
                     
                     # Run BUSCO
                     busco -i "$contig_file" \
-                        -o "${sample_name}" \
+                        -o "${base_name}_${sample_name}" \
                         -m genome \
                         --out_path "/mnt/project/Food_Safety_VET/norair_output/busco_output" \
                         -l pasteurellales_odb12 \
