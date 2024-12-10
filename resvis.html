@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resistance Gene Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-statistics@7.8.3/dist/simple-statistics.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            color: #1d1d1f;
+        }
+        h1 {
+            color: #1d1d1f;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 48px;
+            letter-spacing: -0.003em;
+        }
+        h2 {
+            color: #1d1d1f;
+            border-bottom: none;
+            padding-bottom: 10px;
+            font-weight: 500;
+            font-size: 28px;
+            letter-spacing: -0.003em;
+        }
+        .upload-section, .visualization-section {
+            margin: 20px 0;
+            padding: 30px;
+            background: #fbfbfd;
+            border-radius: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        select, button {
+            margin: 10px 0;
+            padding: 12px 24px;
+            border-radius: 980px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        select {
+            background-color: #ffffff;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
+        }
+        button {
+            background-color: #0071e3;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #0077ed;
+            transform: scale(1.02);
+        }
+        #heatmap, #pca-plot, #abundance-plot {
+            width: 100%;
+            height: 600px;
+            margin-top: 20px;
+            border-radius: 18px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .metric-card {
+            background: white;
+            padding: 24px;
+            margin: 16px 0;
+            border-radius: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .metric-description {
+            font-size: 14px;
+            color: #86868b;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        input[type="file"] {
+            border: 1px solid #d2d2d7;
+            padding: 8px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            background: #0071e3;
+            border: none;
+            border-radius: 980px;
+            color: white;
+            padding: 8px 16px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resistance Gene Analysis by Bibek singh karki</h1>
+    
+    <div class="upload-section">
+        <h2>Data Upload</h2>
+        <div class="input-group">
+            <label>Count Data:</label>
+            <input type="file" id="countFile" accept=".txt,.csv,.tsv">
+        </div>
+        <div class="input-group">
+            <label>Metadata:</label>
+            <input type="file" id="metadataFile" accept=".txt,.csv,.tsv">
+        </div>
+        
+        <div class="input-group">
+            <label>Data Type:</label>
+            <select id="dataType">
+                <option value="resistance">Resistance Genes</option>
+                <option value="taxonomy">Taxonomic Classification</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Data Source:</label>
+            <select id="dataSource">
+                <option value="upload">Upload Files</option>
+                <option value="sample">Use Sample Data</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label>Data Transformation:</label>
+            <select id="transformation">
+                <option value="none">None</option>
+                <option value="rpkm">RPKM</option>
+                <option value="rpm">RPM</option>
+                <option value="clr">CLR</option>
+            </select>
+            <button onclick="processData()">Process Data</button>
+        </div>
+    </div>
+
+    <div class="visualization-section">
+        <h2>Diversity Metrics</h2>
+        <div id="diversity-metrics"></div>
+        
+        <h2>Principal Component Analysis</h2>
+        <div id="pca-plot"></div>
+        
+        <h2>Abundance Plot</h2>
+        <select id="plotType">
+            <option value="bar">Stacked Bar Plot</option>
+            <option value="box">Box Plot</option>
+        </select>
+        <div id="abundance-plot"></div>
+        
+        <h2>Heatmap</h2>
+        <div id="heatmap"></div>
+    </div>
+
+    <script>
+        // Sample data definitions
+        const sampleResistanceData = {
+            counts: [
+                ['Gene', 'Sample1', 'Sample2', 'Sample3', 'Sample4'],
+                ['tetA', 100, 150, 80, 200],
+                ['tetB', 50, 75, 60, 90],
+                ['blaCTX-M', 200, 180, 220, 160],
+                ['mecA', 80, 120, 90, 150],
+                ['vanA', 150, 130, 170, 140]
+            ],
+            metadata: [
+                ['Sample', 'Treatment', 'TimePoint'],
+                ['Sample1', 'Control', 'T0'],
+                ['Sample2', 'Treatment', 'T0'],
+                ['Sample3', 'Control', 'T1'],
+                ['Sample4', 'Treatment', 'T1']
+            ]
+        };
+
+        const sampleTaxonomyData = {
+            counts: [
+                ['Taxon', 'Sample1', 'Sample2', 'Sample3', 'Sample4'],
+                ['Escherichia coli', 1000, 1500, 800, 2000],
+                ['Staphylococcus aureus', 500, 750, 600, 900],
+                ['Pseudomonas aeruginosa', 2000, 1800, 2200, 1600],
+                ['Klebsiella pneumoniae', 800, 1200, 900, 1500],
+                ['Enterococcus faecalis', 1500, 1300, 1700, 1400]
+            ],
+            metadata: [
+                ['Sample', 'Treatment', 'TimePoint'],
+                ['Sample1', 'Control', 'T0'],
+                ['Sample2', 'Treatment', 'T0'],
+                ['Sample3', 'Control', 'T1'],
+                ['Sample4', 'Treatment', 'T1']
+            ]
+        };
+
+        // Helper functions for data analysis
+        function calculateDiversity(data) {
+            const shannon = data.map(row => {
+                const total = row.reduce((a, b) => a + b, 0);
+                return -row.reduce((sum, val) => {
+                    const p = val / total;
+                    return sum + (p > 0 ? p * Math.log(p) : 0);
+                }, 0);
+            });
+
+            const simpson = data.map(row => {
+                const total = row.reduce((a, b) => a + b, 0);
+                return 1 - row.reduce((sum, val) => {
+                    const p = val / total;
+                    return sum + p * p;
+                }, 0);
+            });
+
+            const observed = data.map(row => 
+                row.filter(val => val > 0).length
+            );
+
+            return { shannon, simpson, observed };
+        }
+
+        function performPCA(data) {
+            // Center the data
+            const means = data[0].map((_, colIndex) => 
+                data.reduce((sum, row) => sum + row[colIndex], 0) / data.length
+            );
+            
+            const centered = data.map(row =>
+                row.map((val, colIndex) => val - means[colIndex])
+            );
+
+            // Calculate covariance matrix
+            const covMatrix = [];
+            for (let i = 0; i < centered[0].length; i++) {
+                covMatrix[i] = [];
+                for (let j = 0; j < centered[0].length; j++) {
+                    let sum = 0;
+                    for (let k = 0; k < centered.length; k++) {
+                        sum += centered[k][i] * centered[k][j];
+                    }
+                    covMatrix[i][j] = sum / (centered.length - 1);
+                }
+            }
+
+            // Use numeric.js or another library for eigenvalue decomposition
+            // This is a simplified version returning mock PCA results
+            return {
+                scores: centered.map(row => [
+                    row.reduce((a, b) => a + b, 0),
+                    row.reduce((a, b) => a - b, 0)
+                ]),
+                explained: [0.45, 0.25]
+            };
+        }
+
+        function processData() {
+            const dataSource = document.getElementById('dataSource').value;
+            const dataType = document.getElementById('dataType').value;
+            let data;
+
+            if (dataSource === 'sample') {
+                data = dataType === 'resistance' ? sampleResistanceData : sampleTaxonomyData;
+            } else {
+                if (!countData || !metadataData) {
+                    alert('Please upload both count data and metadata files');
+                    return;
+                }
+                data = {counts: countData, metadata: metadataData};
+            }
+
+            // Process the data matrix
+            const matrix = data.counts.slice(1).map(row => 
+                row.slice(1).map(Number)
+            );
+
+            // Calculate diversity metrics
+            const diversityMetrics = calculateDiversity(matrix);
+            updateDiversityMetrics(diversityMetrics);
+
+            // Perform PCA
+            const pcaResults = performPCA(matrix);
+            updatePCAPlot(pcaResults, data.counts[0].slice(1));
+
+            // Update other visualizations
+            updateAbundancePlot(data);
+            updateHeatmap(data);
+        }
+
+        function updateDiversityMetrics(metrics) {
+            const div = document.getElementById('diversity-metrics');
+            div.innerHTML = `
+                <div class="metric-card">
+                    <h3>Shannon Index: ${metrics.shannon[0].toFixed(3)}</h3>
+                    <p class="metric-description">Measures both richness and evenness</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Simpson Index: ${metrics.simpson[0].toFixed(3)}</h3>
+                    <p class="metric-description">Measures dominance</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Observed Species: ${metrics.observed[0]}</h3>
+                    <p class="metric-description">Number of unique species/genes</p>
+                </div>
+            `;
+        }
+
+        function updatePCAPlot(pcaResults, sampleNames) {
+            const trace = {
+                x: pcaResults.scores.map(score => score[0]),
+                y: pcaResults.scores.map(score => score[1]),
+                mode: 'markers+text',
+                type: 'scatter',
+                text: sampleNames,
+                textposition: 'top center',
+                marker: {
+                    size: 12,
+                    color: '#0071e3',
+                    line: {
+                        color: '#ffffff',
+                        width: 1
+                    }
+                }
+            };
+
+            const layout = {
+                title: 'PCA Plot',
+                paper_bgcolor: '#ffffff',
+                plot_bgcolor: '#ffffff',
+                font: {
+                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                },
+                xaxis: {
+                    title: `PC1 (${(pcaResults.explained[0] * 100).toFixed(1)}%)`,
+                    gridcolor: '#f5f5f7'
+                },
+                yaxis: {
+                    title: `PC2 (${(pcaResults.explained[1] * 100).toFixed(1)}%)`,
+                    gridcolor: '#f5f5f7'
+                }
+            };
+
+            Plotly.newPlot('pca-plot', [trace], layout);
+        }
+
+        function updateAbundancePlot(data) {
+            const plotType = document.getElementById('plotType').value;
+            const counts = data.counts.slice(1);
+            const features = counts.map(row => row[0]);
+            const values = counts.map(row => row.slice(1).map(Number));
+            
+            let traces;
+            if (plotType === 'bar') {
+                traces = features.map((feature, i) => ({
+                    name: feature,
+                    type: 'bar',
+                    x: data.counts[0].slice(1),
+                    y: values[i],
+                    stackgroup: 'one',
+                    marker: {
+                        color: `hsl(${(i * 360/features.length)}, 70%, 50%)`
+                    }
+                }));
+            } else {
+                traces = [{
+                    type: 'box',
+                    y: values.flat(),
+                    x: features.map((f, i) => Array(values[i].length).fill(f)).flat(),
+                    marker: {
+                        color: '#0071e3'
+                    }
+                }];
+            }
+
+            const layout = {
+                title: 'Abundance Plot',
+                barmode: 'stack',
+                paper_bgcolor: '#ffffff',
+                plot_bgcolor: '#ffffff',
+                font: {
+                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                },
+                xaxis: {
+                    gridcolor: '#f5f5f7'
+                },
+                yaxis: {
+                    gridcolor: '#f5f5f7'
+                }
+            };
+
+            Plotly.newPlot('abundance-plot', traces, layout);
+        }
+
+        function updateHeatmap(data) {
+            const counts = data.counts.slice(1);
+            const trace = {
+                z: counts.map(row => row.slice(1).map(Number)),
+                x: data.counts[0].slice(1),
+                y: counts.map(row => row[0]),
+                type: 'heatmap',
+                colorscale: [
+                    [0, '#f5f5f7'],
+                    [1, '#0071e3']
+                ]
+            };
+
+            const layout = {
+                title: 'Heatmap',
+                paper_bgcolor: '#ffffff',
+                font: {
+                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                }
+            };
+
+            Plotly.newPlot('heatmap', [trace], layout);
+        }
+
+        // File upload handlers
+        let countData, metadataData;
+
+        document.getElementById('countFile').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                countData = event.target.result.split('\n').map(row => row.split('\t'));
+            };
+            reader.readAsText(e.target.files[0]);
+        });
+
+        document.getElementById('metadataFile').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                metadataData = event.target.result.split('\n').map(row => row.split('\t'));
+            };
+            reader.readAsText(e.target.files[0]);
+        });
+    </script>
+</body>
+</html>

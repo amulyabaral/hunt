@@ -16,7 +16,7 @@ mkdir -p /mnt/project/Food_Safety_VET/norair_output/quast_output
 tmp_contig_list=$(mktemp)
 
 # Find all contig files and save their paths
-for spades_dir in /mnt/project/Food_Safety_VET/norair_output/spades_assembly_reference_*; do
+for spades_dir in /mnt/project/Food_Safety_VET/norair_output/spades_assembly_*; do
     if [ -d "$spades_dir" ]; then
         find "$spades_dir" -name "contigs.fasta" >> "$tmp_contig_list"
     fi
@@ -25,7 +25,7 @@ done
 # Run QUAST on all assemblies at once
 quast.py --threads 32 \
     -r "$REF_GENOME" \
-    -o "/mnt/project/Food_Safety_VET/norair_output/quast_output/combined_quast" \
+    -o "/mnt/project/Food_Safety_VET/norair_output/quast_output/combined_quast_all" \
     $(cat "$tmp_contig_list")
 
 # Cleanup
