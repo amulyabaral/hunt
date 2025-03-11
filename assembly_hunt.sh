@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --ntasks=200
+#SBATCH --ntasks=150
 #SBATCH --job-name=hunt_assemble 
-#SBATCH --mem=150G 
+#SBATCH --mem=300G 
 #SBATCH --partition=hugemem-avx2 
 #SBATCH --mail-user=amulya.baral@nmbu.no
 #SBATCH --mail-type=ALL
