@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --ntasks=64
+#SBATCH --ntasks=48
 #SBATCH --job-name=hunt_assemble 
-#SBATCH --mem=600G 
+#SBATCH --mem=300G 
 #SBATCH --partition=hugemem-avx2 
 #SBATCH --mail-user=amulya.baral@nmbu.no
 #SBATCH --mail-type=ALL
@@ -31,4 +31,4 @@ export INPUT_DIR OUTPUT_DIR
 find ${INPUT_DIR} -name "*_trimmed_1.fq.gz" | \
     sed "s|${INPUT_DIR}/||" | \
     sed "s|_trimmed_1.fq.gz||" | \
-    xargs -P 4 -I{} bash -c 'run_megahit {}'
+    xargs -P 3 -I{} bash -c 'run_megahit {}'
