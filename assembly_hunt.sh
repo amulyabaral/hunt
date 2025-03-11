@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --ntasks=48
+#SBATCH --ntasks=200
 #SBATCH --job-name=hunt_assemble 
-#SBATCH --mem=300G 
+#SBATCH --mem=150G 
 #SBATCH --partition=hugemem-avx2 
 #SBATCH --mail-user=amulya.baral@nmbu.no
 #SBATCH --mail-type=ALL
@@ -19,7 +19,7 @@ run_megahit() {
     sample=$1
     megahit -1 ${INPUT_DIR}/${sample}_trimmed_1.fq.gz -2 ${INPUT_DIR}/${sample}_trimmed_2.fq.gz \
         -o ${OUTPUT_DIR}/${sample} \
-        --num-cpu-threads 16 \
+        --num-cpu-threads 50 \
         --min-contig-len 500
 }
 
